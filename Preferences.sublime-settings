@@ -1,0 +1,37 @@
+{
+	"binary_file_patterns":
+	[
+		"*.jpg",
+		"*.jpeg",
+		"*.png",
+		"*.gif",
+		"*.ttf",
+		"*.tga",
+		"*.dds",
+		"*.ico",
+		"*.eot",
+		"*.pdf",
+		"*.swf",
+		"*.jar",
+		"*.zip",
+		"node_modules/**",
+		"SBIS3.CONTROLS/"
+	],
+	"color_scheme": "Packages/User/SublimeLinter/Darkside (SL).tmTheme",
+	"detect_indentation": false,
+	"find_selected_text": true,
+	"font_face": "Inconsolata",
+	"font_size": 18,
+	"highlight_modified_tabs": true,
+	"ignored_packages":
+	[
+		"Vintage"
+	],
+	"numix_folder_icons": true,
+	"original_color_scheme": "Packages/Color Scheme - Default/Monokai.tmTheme",
+	"overlay_scroll_bars": "enabled",
+	"tab_size": 3,
+	"tabs_small": false,
+	"theme": "Numix Dark.sublime-theme",
+	"translate_tabs_to_spaces": true
+}
