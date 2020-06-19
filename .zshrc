@@ -3,13 +3,15 @@ export PATH=$HOME/bin:/usr/local/bin:$PATH
 source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # Path to your oh-my-zsh installation.
-export ZSH="/Users/icheremushkin/.oh-my-zsh"
-eval $(thefuck --alias)
+export ZSH="/Users/cherya/.oh-my-zsh"
+
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-ZSH_THEME="agnoster"
+ZSH_THEME="powerlevel9k/powerlevel9k"
+POWERLEVEL9K_MODE="nerdfont-complete"
+POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(dir vcs virtualenv)
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -64,7 +66,10 @@ ZSH_THEME="agnoster"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-  git
+	git
+	zsh-autosuggestions
+	zsh-syntax-highlighting
+	jira
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -97,18 +102,18 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-
-source /Users/icheremushkin/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+eval $(thefuck --alias)
 
 #remove username@host from promt
-prompt_context() {}
+# prompt_context() {}
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+export LC_ALL=en_US.UTF-8
 
 # golang
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
 export PATH=$PATH:$GOROOT/bin
 export GO111MODULE=on
-
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-export LC_ALL=en_US.UTF-8
+export GOPRIVATE="*.ozon.ru,github.com/cherya"
