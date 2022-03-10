@@ -14,25 +14,60 @@ vim.api.nvim_exec([[
   augroup end
 ]], false)
 
+vim.api.nvim_exec([[
+	command -nargs=1 Browse silent exe '!open ' . "<args>"
+]], false)
+
+vim.g.loaded_netrwPlugin = 1
+vim.g.loaded_netrw = 1
+
 local use = require('packer').use
 require('packer').startup(function()
     use 'wbthomason/packer.nvim' -- package manager
     use 'tpope/vim-commentary' -- "gc" to comment visual regions/lines
     use 'ludovicchabant/vim-gutentags' -- automatic tags management
     use {'nvim-telescope/telescope.nvim', requires = {'nvim-lua/plenary.nvim'}} -- ui to select things (files, grep results, open buffers...)
-    use 'itchyny/lightline.vim' -- fancier statusline
-    use {'josa42/nvim-lightline-lsp', requires = {'itchyny/lightline.vim'}} -- statusline lsp info, warnings, errors etc
+    use {
+        'TC72/telescope-tele-tabby.nvim',
+        requires = {'nvim-telescope/telescope.nvim'}
+    }
+    use {
+        'nvim-lualine/lualine.nvim',
+        requires = {'kyazdani42/nvim-web-devicons', opt = true}
+    } -- fancier statusline
     use 'sainnhe/gruvbox-material' -- theme
     use {'lewis6991/gitsigns.nvim', requires = {'nvim-lua/plenary.nvim'}} -- add git related info in the signs columns and popups}
     use 'nvim-treesitter/nvim-treesitter' -- highlight, edit, and navigate code using a fast incremental parsing library
     use 'nvim-treesitter/nvim-treesitter-textobjects' -- additional textobjects for treesitter
     use 'neovim/nvim-lspconfig' -- collection of configurations for built-in lsp client
+    use {
+        'j-hui/fidget.nvim',
+        config = function() require("fidget").setup {} end
+    }
     use {'ms-jpq/coq_nvim', branch = 'coq'} -- fast as fuck autocompletion plugin
     use {'ms-jpq/coq.artifacts', branch = 'artifacts'} -- 9000+ snippets
-    use 'glepnir/lspsaga.nvim' -- language server ui original repo
     use 'p00f/nvim-ts-rainbow' -- rainbow brackets
     use 'vim-test/vim-test' -- tests runner
-    use 'folke/trouble.nvim'
+    use {
+        "folke/trouble.nvim",
+        requires = "kyazdani42/nvim-web-devicons",
+        config = function()
+            require("trouble").setup {
+                auto_open = true,
+                auto_close = true,
+                auto_preview = true,
+                icons = true,
+                signs = {
+                    -- icons / text used for a diagnostic
+                    error = "",
+                    warning = "",
+                    hint = "",
+                    information = "",
+                    other = "﫠"
+                }
+            }
+        end
+    }
     use 'ray-x/go.nvim' -- golang
     use 'unblevable/quick-scope' -- letters highlight for f f t t
     use {'kyazdani42/nvim-tree.lua', requires = 'kyazdani42/nvim-web-devicons'}
@@ -48,12 +83,19 @@ require('packer').startup(function()
     use 'rrethy/vim-illuminate' -- highlight word under cursor (with lsp integration)
     use 'ray-x/lsp_signature.nvim' -- functions singature when typing
     use 'phaazon/hop.nvim' -- easy motion
-    use 'mhinz/vim-startify' -- vim start screen
+    use {'mhinz/vim-startify', requires = 'itchyny/vim-gitbranch'} -- vim start screen
     use 'tpope/vim-fugitive' -- git integration
+    use 'tpope/vim-rhubarb' -- GBrowse provider
     use 'mfussenegger/nvim-dap'
     use 'rcarriga/nvim-dap-ui'
     use 'thehamsta/nvim-dap-virtual-text'
     use 'folke/which-key.nvim' -- hotkeys helper
+    use {
+        'mfussenegger/nvim-lint',
+        config = function()
+            require("trouble").setup {go = 'golangcilint'}
+        end
+    }
 end)
 
 local utils = require('utils')
@@ -102,23 +144,25 @@ vim.wo.signcolumn = 'yes'
 vim.o.termguicolors = true
 vim.g.gruvbox_material_background = 'medium'
 vim.g.gruvbox_material_palette = 'mix'
+vim.g.gruvbox_material_diagnostic_virtual_text = 'colored'
+vim.g.gruvbox_material_diagnostic_text_highlight = '1'
+vim.g.gruvbox_material_diagnostic_line_highlight = '1'
 vim.cmd [[colorscheme gruvbox-material]]
 
--- Set statusbar
-vim.g.lightline = {
-    colorscheme = 'wombat',
-    active = {
-        left = {
-            {
-                'mode', 'paste', 'lsp_info', 'lsp_hints', 'lsp_errors',
-                'lsp_warnings', 'lsp_ok'
-            }, {'gitbranch', 'readonly', 'filename', 'modified', 'lsp_status'}
-        }
-    },
-    component_function = {gitbranch = 'fugitive#head'}
+-- Set statusline
+local lualine = require('lualine')
+
+-- Config
+local config = {
+    options = {
+        -- Disable sections and component separators
+        component_separators = '',
+        section_separators = '',
+        theme = 'gruvbox-material'
+    }
 }
--- register compoments:
-vim.cmd [[call lightline#lsp#register()]]
+-- Now don't forget to initialize lualine
+lualine.setup(config)
 
 -- Remap ' as leader key
 utils.map('', '\'', '<Nop>')
@@ -172,7 +216,7 @@ utils.map('n', '<leader>L', ':lua require"hop".hint_lines()<CR>')
 utils.map('n', ';w', ':lua require"hop".hint_words()<CR>')
 
 -- format
-require"format".setup {
+require("lsp-format").setup {
     ["*"] = {
         {cmd = {"sed -i 's/[ \t]*$//'"}} -- remove trailing whitespace
     },
@@ -185,7 +229,7 @@ require"format".setup {
     },
     lua = {{cmd = {"lua-format -i"}}},
     go = {{cmd = {"gofmt -w", "goimports -w"}, tempfile_postfix = ".tmp"}},
-    javascript = {{cmd = {"prettier -w", "./node_modules/.bin/eslint --fix"}}}
+    javascript = {{cmd = {"prettier -w", "./node_modules/.bin/esint --fix"}}}
 }
 -- format on write
 vim.api.nvim_exec(
@@ -209,13 +253,26 @@ vim.g.startify_lists = {
     {type = 'commands', header = {'   Commands'}}
 }
 
-vim.g.startify_files_number = 3
+vim.g.startify_files_number = 5
 vim.g.startify_update_oldfiles = 1
 vim.g.startify_session_autoload = 1
 vim.g.startify_session_before_save = {'silent! tabdo NvimTreeClose'}
 vim.g.startify_session_persistence = 1
 vim.g.startify_change_to_vcs_root = 1
 vim.g.startify_enable_special = 0
+
+-- vim.api.nvim_exec(
+-- 	[[
+-- 	function! GetUniqueSessionName()
+-- 		let path = fnamemodify(getcwd(), ':~:t')
+-- 		let path = empty(path) ? 'no-project' : path
+-- 		let branch = gitbranch#name()
+-- 		let branch = empty(branch) ? '' : '-' . branch
+-- 		return substitute(path . branch, '/', '-', 'g')
+-- 	endfunction
+-- 	autocmd User        StartifyReady silent execute 'SLoad '  . GetUniqueSessionName()
+-- 	autocmd VimLeavePre *             silent execute 'SSave! ' . GetUniqueSessionName()
+-- ]], true)
 
 -- nvim-tree
 require('nvim-tree').setup {}
@@ -362,6 +419,12 @@ parser_config.tsx.used_by = {"javascript", "typescript.tsx"}
 local nvim_lsp = require('lspconfig')
 local protocol = require 'vim.lsp.protocol'
 
+local signs = {Error = " ", Warn = " ", Hint = " ", Info = " "}
+for type, icon in pairs(signs) do
+    local hl = "DiagnosticSign" .. type
+    vim.fn.sign_define(hl, {text = icon, texthl = hl, numhl = ""})
+end
+
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
@@ -381,18 +444,20 @@ local on_attach = function(client, bufnr)
     -- See `:help vim.lsp.*` for documentation on any of the below functions
     buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
     buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
-    -- buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+    buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
     buf_set_keymap('n', 'gi', '<Cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-    -- buf_set_keymap('i', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+    -- buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+    buf_set_keymap('n', 'gr', '<cmd>Telescope lsp_references<CR>', opts)
+    buf_set_keymap('i', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>',
+                   opts)
     -- buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
     -- buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
     -- buf_set_keymap('n', '<leader>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
     buf_set_keymap('n', '<leader>D',
                    '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-    -- buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+    buf_set_keymap('n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
     buf_set_keymap('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>',
                    opts)
-    buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
     -- buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
     -- buf_set_keymap('n', '<C-j>', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
     -- buf_set_keymap('n', '<S-C-j>', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
@@ -400,27 +465,19 @@ local on_attach = function(client, bufnr)
 
     -- Set some keybinds conditional on server capabilities
     if client.resolved_capabilities.document_formatting then
-        buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>',
-                       opts)
+        buf_set_keymap('n', '<leader>f',
+                       '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
     elseif client.resolved_capabilities.document_range_formatting then
-        buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>',
-                       opts)
+        buf_set_keymap('n', '<leader>f',
+                       '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
     end
 
     -- formatting
-    if client.resolved_capabilities.document_formatting then
-        vim.api.nvim_command [[augroup Format]]
-        vim.api.nvim_command [[autocmd! * <buffer>]]
-        vim.api
-            .nvim_command [[autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_seq_sync()]]
-        vim.api.nvim_command [[augroup END]]
-    end
-
-    require'illuminate'.on_attach(client)
-    require'lsp_signature'.on_attach({
+    require "lsp-format".on_attach(client)
+	require "illuminate".on_attach(client)
+    require "lsp_signature".on_attach({
         bind = true,
-        handler_opts = {border = "single"},
-        use_lspsaga = true
+        handler_opts = {border = "single"}
     })
 
     -- protocol.SymbolKind = { }
@@ -510,22 +567,9 @@ nvim_lsp.sumneko_lua.setup {
     }
 }
 
-local saga = require 'lspsaga'
-saga.init_lsp_saga {
-    error_sign = '',
-    warn_sign = '',
-    hint_sign = '',
-    infor_sign = '',
-    code_action_prompt = {enable = true, sign = false, virtual_text = true}
-}
+require'nvim-dap-virtual-text'.setup()
 
-utils.map('n', 'K', '<cmd>Lspsaga hover_doc<CR>', {silent = true})
-utils.map('n', 'gh', '<cmd>lua require"lspsaga.provider".lsp_finder()<CR>',
-          {silent = true})
-utils.map('n', '<leader>rn', '<cmd>Lspsaga rename<CR>', {silent = true})
-utils.map('n', ';d', '<cmd>Lspsaga preview_definition<CR>', {silent = true})
-
--- icon
+-- diagnostics virtual text icon
 vim.lsp.handlers["textDocument/publishDiagnostics"] =
     vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
         underline = true,
@@ -552,28 +596,6 @@ require'go'.setup({
 -- format on save
 vim.cmd("autocmd FileType go nmap <Leader><Leader>l :GoLint")
 
--- Send diagnostics to quickfix list
-do
-    local method = "textDocument/publishDiagnostics"
-    local default_handler = vim.lsp.handlers[method]
-    vim.lsp.handlers[method] = function(err, method, result, client_id, bufnr,
-                                        config)
-        default_handler(err, method, result, client_id, bufnr, config)
-        local diagnostics = vim.lsp.diagnostic.get_all()
-        local qflist = {}
-        for bufnr, diagnostic in pairs(diagnostics) do
-            for _, d in ipairs(diagnostic) do
-                d.bufnr = bufnr
-                d.lnum = d.range.start.line + 1
-                d.col = d.range.start.character + 1
-                d.text = d.message
-                table.insert(qflist, d)
-            end
-        end
-        vim.lsp.util.set_qflist(qflist)
-    end
-end
-
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
 
@@ -591,9 +613,9 @@ local lazygit = Terminal:new({
     end
 })
 
-function _lazygit_toggle() lazygit:toggle() end
+function Lazygit_toggle() lazygit:toggle() end
 
-utils.map('n', '<leader>lg', '<cmd>lua _lazygit_toggle()<CR>')
+utils.map('n', '<leader>lg', '<cmd>lua Lazygit_toggle()<CR>')
 
 function _G.set_terminal_keymaps()
     local opts = {noremap = true}

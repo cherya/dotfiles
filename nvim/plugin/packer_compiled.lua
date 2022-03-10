@@ -57,7 +57,7 @@ end
 time([[Luarocks path setup]], false)
 time([[try_loadstring definition]], true)
 local function try_loadstring(s, component, name)
-  local success, result = pcall(loadstring(s))
+  local success, result = pcall(loadstring(s), name, _G.packer_plugins[name])
   if not success then
     vim.schedule(function()
       vim.api.nvim_notify('packer.nvim: Error running ' .. component .. ' for ' .. name .. ': ' .. result, vim.log.levels.ERROR, {})
@@ -83,6 +83,12 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/cherya/.local/share/nvim/site/pack/packer/start/coq_nvim",
     url = "https://github.com/ms-jpq/coq_nvim"
+  },
+  ["fidget.nvim"] = {
+    config = { "\27LJ\2\n8\0\0\3\0\3\0\a6\0\0\0'\2\1\0B\0\2\0029\0\2\0004\2\0\0B\0\2\1K\0\1\0\nsetup\vfidget\frequire\0" },
+    loaded = true,
+    path = "/Users/cherya/.local/share/nvim/site/pack/packer/start/fidget.nvim",
+    url = "https://github.com/j-hui/fidget.nvim"
   },
   ["format.nvim"] = {
     loaded = true,
@@ -119,20 +125,15 @@ _G.packer_plugins = {
     path = "/Users/cherya/.local/share/nvim/site/pack/packer/start/is.vim",
     url = "https://github.com/haya14busa/is.vim"
   },
-  ["lightline.vim"] = {
-    loaded = true,
-    path = "/Users/cherya/.local/share/nvim/site/pack/packer/start/lightline.vim",
-    url = "https://github.com/itchyny/lightline.vim"
-  },
   ["lsp_signature.nvim"] = {
     loaded = true,
     path = "/Users/cherya/.local/share/nvim/site/pack/packer/start/lsp_signature.nvim",
     url = "https://github.com/ray-x/lsp_signature.nvim"
   },
-  ["lspsaga.nvim"] = {
+  ["lualine.nvim"] = {
     loaded = true,
-    path = "/Users/cherya/.local/share/nvim/site/pack/packer/start/lspsaga.nvim",
-    url = "https://github.com/glepnir/lspsaga.nvim"
+    path = "/Users/cherya/.local/share/nvim/site/pack/packer/start/lualine.nvim",
+    url = "https://github.com/nvim-lualine/lualine.nvim"
   },
   ["nlua.nvim"] = {
     loaded = true,
@@ -154,10 +155,11 @@ _G.packer_plugins = {
     path = "/Users/cherya/.local/share/nvim/site/pack/packer/start/nvim-dap-virtual-text",
     url = "https://github.com/thehamsta/nvim-dap-virtual-text"
   },
-  ["nvim-lightline-lsp"] = {
+  ["nvim-lint"] = {
+    config = { "\27LJ\2\nL\0\0\3\0\4\0\a6\0\0\0'\2\1\0B\0\2\0029\0\2\0005\2\3\0B\0\2\1K\0\1\0\1\0\1\ago\17golangcilint\nsetup\ftrouble\frequire\0" },
     loaded = true,
-    path = "/Users/cherya/.local/share/nvim/site/pack/packer/start/nvim-lightline-lsp",
-    url = "https://github.com/josa42/nvim-lightline-lsp"
+    path = "/Users/cherya/.local/share/nvim/site/pack/packer/start/nvim-lint",
+    url = "https://github.com/mfussenegger/nvim-lint"
   },
   ["nvim-lspconfig"] = {
     loaded = true,
@@ -209,6 +211,11 @@ _G.packer_plugins = {
     path = "/Users/cherya/.local/share/nvim/site/pack/packer/start/quick-scope",
     url = "https://github.com/unblevable/quick-scope"
   },
+  ["telescope-tele-tabby.nvim"] = {
+    loaded = true,
+    path = "/Users/cherya/.local/share/nvim/site/pack/packer/start/telescope-tele-tabby.nvim",
+    url = "https://github.com/TC72/telescope-tele-tabby.nvim"
+  },
   ["telescope.nvim"] = {
     loaded = true,
     path = "/Users/cherya/.local/share/nvim/site/pack/packer/start/telescope.nvim",
@@ -220,6 +227,7 @@ _G.packer_plugins = {
     url = "https://github.com/akinsho/toggleterm.nvim"
   },
   ["trouble.nvim"] = {
+    config = { "\27LJ\2\n�\1\0\0\4\0\6\0\t6\0\0\0'\2\1\0B\0\2\0029\0\2\0005\2\3\0005\3\4\0=\3\5\2B\0\2\1K\0\1\0\nsigns\1\0\5\thint\b\nerror\b\fwarning\b\nother\b﫠\16information\b\1\0\4\14auto_open\2\nicons\2\17auto_preview\2\15auto_close\2\nsetup\ftrouble\frequire\0" },
     loaded = true,
     path = "/Users/cherya/.local/share/nvim/site/pack/packer/start/trouble.nvim",
     url = "https://github.com/folke/trouble.nvim"
@@ -234,6 +242,11 @@ _G.packer_plugins = {
     path = "/Users/cherya/.local/share/nvim/site/pack/packer/start/vim-fugitive",
     url = "https://github.com/tpope/vim-fugitive"
   },
+  ["vim-gitbranch"] = {
+    loaded = true,
+    path = "/Users/cherya/.local/share/nvim/site/pack/packer/start/vim-gitbranch",
+    url = "https://github.com/itchyny/vim-gitbranch"
+  },
   ["vim-gutentags"] = {
     loaded = true,
     path = "/Users/cherya/.local/share/nvim/site/pack/packer/start/vim-gutentags",
@@ -243,6 +256,11 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/cherya/.local/share/nvim/site/pack/packer/start/vim-illuminate",
     url = "https://github.com/rrethy/vim-illuminate"
+  },
+  ["vim-rhubarb"] = {
+    loaded = true,
+    path = "/Users/cherya/.local/share/nvim/site/pack/packer/start/vim-rhubarb",
+    url = "https://github.com/tpope/vim-rhubarb"
   },
   ["vim-smartq"] = {
     loaded = true,
@@ -272,10 +290,23 @@ _G.packer_plugins = {
 }
 
 time([[Defining packer_plugins]], false)
+-- Config for: trouble.nvim
+time([[Config for trouble.nvim]], true)
+try_loadstring("\27LJ\2\n�\1\0\0\4\0\6\0\t6\0\0\0'\2\1\0B\0\2\0029\0\2\0005\2\3\0005\3\4\0=\3\5\2B\0\2\1K\0\1\0\nsigns\1\0\5\thint\b\nerror\b\fwarning\b\nother\b﫠\16information\b\1\0\4\14auto_open\2\nicons\2\17auto_preview\2\15auto_close\2\nsetup\ftrouble\frequire\0", "config", "trouble.nvim")
+time([[Config for trouble.nvim]], false)
+-- Config for: fidget.nvim
+time([[Config for fidget.nvim]], true)
+try_loadstring("\27LJ\2\n8\0\0\3\0\3\0\a6\0\0\0'\2\1\0B\0\2\0029\0\2\0004\2\0\0B\0\2\1K\0\1\0\nsetup\vfidget\frequire\0", "config", "fidget.nvim")
+time([[Config for fidget.nvim]], false)
+-- Config for: nvim-lint
+time([[Config for nvim-lint]], true)
+try_loadstring("\27LJ\2\nL\0\0\3\0\4\0\a6\0\0\0'\2\1\0B\0\2\0029\0\2\0005\2\3\0B\0\2\1K\0\1\0\1\0\1\ago\17golangcilint\nsetup\ftrouble\frequire\0", "config", "nvim-lint")
+time([[Config for nvim-lint]], false)
 if should_profile then save_profiles() end
 
 end)
 
 if not no_errors then
+  error_msg = error_msg:gsub('"', '\\"')
   vim.api.nvim_command('echohl ErrorMsg | echom "Error in packer_compiled: '..error_msg..'" | echom "Please check your config for correctness" | echohl None')
 end
