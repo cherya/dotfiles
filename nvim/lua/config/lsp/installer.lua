@@ -1,5 +1,8 @@
-local lsp_installer_servers = require("nvim-lsp-installer.servers")
 local utils = require("utils")
+local coq = require("coq")
+local lspconfig = require("lspconfig")
+local configs = require("lspconfig/configs")
+local lsp_installer_servers = require("nvim-lsp-installer.servers")
 
 local M = {}
 
@@ -13,7 +16,6 @@ function M.setup(servers, options)
 				local opts = vim.tbl_deep_extend("force", options,
 					servers[server.name] or {})
 				-- For coq.nvim
-				local coq = require "coq"
 				server:setup(coq.lsp_ensure_capabilities(opts))
 			end)
 
@@ -27,8 +29,6 @@ function M.setup(servers, options)
 	end
 
 	-- setup golangcilsp
-	local lspconfig = require("lspconfig")
-	local configs = require("lspconfig/configs")
 	if not configs.golangcilsp then
 		configs.golangcilsp = {
 			default_config = {

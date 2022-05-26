@@ -1,5 +1,5 @@
 local M = {}
-local whichkey = require "which-key"
+local whichkey = require("which-key")
 local conf = {
 	window = {
 		border = "single", -- none, single, double, shadow
@@ -75,10 +75,14 @@ local function normal_keymap()
 			c = { "<cmd>PackerCompile<cr>", "Compile" },
 			i = { "<cmd>PackerInstall<cr>", "Install" },
 			p = { "<cmd>PackerProfile<cr>", "Profile" },
+			t = { "<cmd>ToggleTerm<cr>", "Terminal" },
 			s = { "<cmd>PackerSync<cr>", "Sync" },
 			S = { "<cmd>PackerStatus<cr>", "Status" },
 			u = { "<cmd>PackerUpdate<cr>", "Update" },
 			r = { "<cmd>Telescope reloader<cr>", "Reload Module" },
+			e = { "!!$SHELL<CR>", "Execute line" },
+			W = { "<cmd>lua require('utils.session').toggle_session()<cr>", "Toggle Workspace Saving" },
+			w = { "<cmd>lua require('utils.session').list_session()<cr>", "Restore Workspace" },
 		},
 
 		h = {

@@ -1,3 +1,4 @@
+local utils = require("utils")
 local M = {}
 
 function M.setup()
@@ -36,11 +37,13 @@ function M.setup()
 
 	local function plugins(use)
 		use 'wbthomason/packer.nvim' -- package manager
+		use { "lewis6991/impatient.nvim" } -- Performance
 		use 'tpope/vim-commentary' -- "gc" to comment visual regions/lines
 		use 'DanilaMihailov/beacon.nvim'
 		use {
 			"nvim-telescope/telescope.nvim",
 			module = 'telescope',
+			event = 'VimEnter',
 			requires = {
 				"nvim-lua/popup.nvim",
 				"nvim-lua/plenary.nvim",
@@ -57,7 +60,7 @@ function M.setup()
 					end
 				}
 			},
-			config = function() require("config.telescope").setup() end
+			config = function() require("config.telescope").setup() end,
 		}
 		use {
 			'TC72/telescope-tele-tabby.nvim',
@@ -68,7 +71,8 @@ function M.setup()
 			requires = { 'kyazdani42/nvim-web-devicons', opt = true },
 			config = function() require("config.lualine").setup() end,
 		} -- fancier statusline
-		use 'sainnhe/gruvbox-material' -- theme
+		use { 'sainnhe/gruvbox-material' } -- theme
+		use { "nathom/filetype.nvim" }
 		use {
 			'lewis6991/gitsigns.nvim',
 			requires = { 'nvim-lua/plenary.nvim' },
@@ -83,7 +87,7 @@ function M.setup()
 		use {
 			"rcarriga/nvim-notify",
 			event = "VimEnter",
-			config = function() vim.notify = require "notify" end
+			config = function() vim.notify = require("notify") end
 		} -- notifications
 		use "jose-elias-alvarez/null-ls.nvim"
 		use {
@@ -184,9 +188,11 @@ function M.setup()
 			config = function() require("hop").setup() end
 		}
 		use {
-			'mhinz/vim-startify',
-			requires = 'itchyny/vim-gitbranch',
-			config = function() require("config.startify").setup() end
+			"goolord/alpha-nvim",
+			wants = { "which-key" },
+			config = function()
+				require("config.alpha").setup()
+			end,
 		} -- vim start screen
 		use 'tpope/vim-fugitive' -- git integration
 		use 'tpope/vim-rhubarb' -- GBrowse provider
@@ -194,17 +200,16 @@ function M.setup()
 		use 'rcarriga/nvim-dap-ui'
 		use {
 			'thehamsta/nvim-dap-virtual-text',
-			config = function() require 'nvim-dap-virtual-text'.setup() end,
+			config = function() require("nvim-dap-virtual-text").setup() end,
 		}
 		use {
 			'folke/which-key.nvim', -- hotkeys helper,
-			event = "VimEnter",
-			config = function() require("config.whichkey").setup() end
+			config = function() require("config.whichkey").setup() end,
 		}
 		use { "SmiteshP/nvim-gps", requires = "nvim-treesitter/nvim-treesitter" }
 		use {
 			"karb94/neoscroll.nvim",
-			config = function() require("config.neoscroll").setup() end
+			config = function() require("config.neoscroll").setup() end,
 		}
 
 		-- Bootstrap Neovim
@@ -217,6 +222,10 @@ function M.setup()
 	-- Init and start packer
 	packer_init()
 	local packer = require("packer")
+
+	-- Performance
+	pcall(require, "impatient")
+
 	packer.init(conf)
 	packer.startup(plugins)
 end

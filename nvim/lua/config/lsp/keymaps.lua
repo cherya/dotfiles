@@ -1,6 +1,6 @@
 local M = {}
 
-local whichkey = require "which-key"
+local whichkey = require("which-key")
 
 local keymap = vim.api.nvim_set_keymap
 local buf_keymap = vim.api.nvim_buf_set_keymap
