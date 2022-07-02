@@ -2,7 +2,11 @@
 local M = {}
 
 function M.setup()
-	require('toggleterm').setup()
+	require('toggleterm').setup({
+		shade_terminals = false,
+		persist_size = true,
+		persist_mode = true,
+	})
 
 	function _G.set_terminal_keymaps()
 		local opts = { noremap = true }

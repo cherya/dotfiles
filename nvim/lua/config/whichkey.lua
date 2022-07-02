@@ -44,7 +44,8 @@ local function normal_keymap()
 			"<cmd>lua require'telescope'.extensions.project.project{display_type = 'full'}<cr>",
 			"List"
 		},
-		s = { "<cmd>lua require'telescope'.extensions.repo.list{search_dirs = {'~/go/src/github.com', '~/Projects', '~/Prisma'}}<cr>", "Search" },
+		s = { "<cmd>lua require'telescope'.extensions.repo.list{search_dirs = {'~/go/src/github.com', '~/Projects', '~/Prisma'}}<cr>",
+			"Search" },
 		P = { "<cmd>TermExec cmd='BROWSER=brave yarn dev'<cr>", "Slidev" }
 	}
 
@@ -83,6 +84,7 @@ local function normal_keymap()
 			e = { "!!$SHELL<CR>", "Execute line" },
 			W = { "<cmd>lua require('utils.session').toggle_session()<cr>", "Toggle Workspace Saving" },
 			w = { "<cmd>lua require('utils.session').list_session()<cr>", "Restore Workspace" },
+			z = { "<cmd>ToggleTerm<cr>", "Terminal" },
 		},
 
 		h = {
@@ -98,6 +100,19 @@ local function normal_keymap()
 		}
 	}
 	whichkey.register(mappings, opts)
+
+	whichkey.register(
+		{ s = { "<cmd>SearchBoxIncSearch<CR>", "Search" } },
+		{ mode = "n", silent = true, noremap = true, prefix = "<leader>" }
+	)
+	whichkey.register(
+		{ r = { "<cmd>SearchBoxReplace<CR>", "Replace" } },
+		{ mode = "n", silent = true, noremap = true, prefix = "<leader>" }
+	)
+	whichkey.register(
+		{ [":"] = { "<cmd>FineCmdline<CR>", "Command Line" } },
+		{ mode = "n", noremap = true }
+	)
 end
 
 local function code_keymap()
@@ -117,11 +132,6 @@ local function code_keymap()
 			keymap = {
 				name = "Code",
 				r = { "<cmd>luafile %<cr>", "Run" },
-			}
-		elseif ft == "rust" then
-			keymap = {
-				name = "Code",
-				r = { "<cmd>Cargo run<cr>", "Run" },
 			}
 		elseif ft == "go" then
 			keymap = {

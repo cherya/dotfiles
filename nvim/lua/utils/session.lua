@@ -43,6 +43,7 @@ local function restore_session(prompt_bufnr, _)
 		local cmd = "source " .. session_name
 		vim.cmd(cmd)
 		utils.info(session_name, "Session restored")
+		M.toggle_session()
 	end)
 	return true
 end
@@ -79,6 +80,22 @@ function M.delete_session()
 end
 
 local track_session = false
+local function enable_session_tracking(session_name)
+	if session_name then
+		session_name = vim.g.session_dir .. "/" .. session_name
+		make_session(session_name) -- Save the session on toggle
+		-- Create autocmd
+		local grp = vim.api.nvim_create_augroup("SessionTracking", { clear = true })
+		vim.api.nvim_create_autocmd("VimLeave", { -- nvim 0.7 and above only
+			pattern = "*",
+			callback = function()
+				make_session(session_name)
+			end,
+			group = grp,
+		})
+		utils.info("Session tracking enabled", "Session")
+	end
+end
 
 function M.toggle_session()
 	if track_session then
@@ -86,23 +103,12 @@ function M.toggle_session()
 		track_session = false
 		utils.info("Session tracking disabled", "Session")
 	else
-		vim.ui.input({ prompt = "Input session name: ", default = default_session_name }, function(session_name)
-			if session_name then
-				session_name = vim.g.session_dir .. "/" .. session_name
-				make_session(session_name) -- Save the session on toggle
-				-- Create autocmd
-				local grp = vim.api.nvim_create_augroup("SessionTracking", { clear = true })
-				vim.api.nvim_create_autocmd("VimLeave", { -- nvim 0.7 and above only
-					pattern = "*",
-					callback = function()
-						make_session(session_name)
-					end,
-					group = grp,
-				})
-				track_session = true
-				utils.info("Session tracking enabled", "Session")
-			end
-		end)
+		if default_session_name == "Session.vim" then
+			vim.ui.input({ prompt = "Input session name: ", default = default_session_name }, enable_session_tracking)
+		else
+			enable_session_tracking(default_session_name)
+		end
+		track_session = true
 	end
 end
 

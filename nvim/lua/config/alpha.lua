@@ -6,17 +6,22 @@ local function footer()
 	-- Number of plugins
 	local total_plugins = #vim.tbl_keys(packer_plugins)
 	local datetime = os.date "  %d-%m-%Y   %H:%M:%S"
-
+	local plugins_text = "   " .. total_plugins .. " plugins loaded " .. datetime
+	-- nevim version
 	local version = vim.version()
 	local nvim_version_info = "   v" .. version.major .. "." .. version.minor .. "." .. version.patch
-	local plugins_text = "   " .. total_plugins .. " plugins loaded " .. datetime
-	return nvim_version_info .. plugins_text
+	-- working dir
+	local wd = vim.loop.cwd()
+	wd = "  " .. wd .. "\n\n"
+	-- footer
+	return wd .. nvim_version_info .. plugins_text
 end
 
 math.randomseed(os.time())
 dashboard.section.header.val = headers[math.random(1, #headers)]
 
 dashboard.section.buttons.val = {
+	dashboard.button('ls', '  Restore Session', '<cmd>lua require("utils.session").list_session()<cr>'),
 	dashboard.button('e', 'ﱐ  New file', '<cmd>ene<CR>'),
 	dashboard.button('s', '  Sync plugins', '<cmd>PackerSync<CR>'),
 	dashboard.button('c', '  Configurations', '<cmd>e ~/.config/nvim/<CR>'),
@@ -56,7 +61,8 @@ local occu_height = #dashboard.section.header.val + 2 * #dashboard.section.butto
 local header_padding = math.max(0, math.ceil((vim.fn.winheight('$') - occu_height) * 0.25))
 local foot_butt_padding_ub = vim.o.lines - header_padding - occu_height - #dashboard.section.footer.val - 3
 local foot_butt_padding = math.floor((vim.fn.winheight('$') - 2 * header_padding - occu_height))
-foot_butt_padding = math.max(0, math.max(math.min(0, foot_butt_padding), math.min(math.max(0, foot_butt_padding), foot_butt_padding_ub)))
+foot_butt_padding = math.max(0,
+	math.max(math.min(0, foot_butt_padding), math.min(math.max(0, foot_butt_padding), foot_butt_padding_ub)))
 
 dashboard.config.layout = {
 	{ type = 'padding', val = header_padding },

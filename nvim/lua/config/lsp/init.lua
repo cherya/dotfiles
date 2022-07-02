@@ -2,6 +2,7 @@ local M = {}
 local servers = {
 	gopls = {},
 	html = {},
+	sqlls = {},
 	jsonls = {
 		settings = {
 			json = {

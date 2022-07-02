@@ -1,4 +1,3 @@
-local utils = require("utils")
 local M = {}
 
 function M.setup()
@@ -45,22 +44,29 @@ function M.setup()
 			module = 'telescope',
 			event = 'VimEnter',
 			requires = {
-				"nvim-lua/popup.nvim",
-				"nvim-lua/plenary.nvim",
-				{
-					"nvim-telescope/telescope-fzf-native.nvim",
-					run = "make",
-				},
+				"nvim-lua/popup.nvim", "nvim-lua/plenary.nvim",
+				{ "nvim-telescope/telescope-fzf-native.nvim", run = "make" },
 				"nvim-telescope/telescope-project.nvim",
 				"cljoly/telescope-repo.nvim",
-				"nvim-telescope/telescope-file-browser.nvim", {
-					"ahmedkhalf/project.nvim",
-					config = function()
-						require("project_nvim").setup {}
-					end
-				}
+				"nvim-telescope/telescope-file-browser.nvim",
+				"ahmedkhalf/project.nvim"
 			},
-			config = function() require("config.telescope").setup() end,
+			config = function()
+				require("config.telescope").setup()
+			end,
+		}
+		use {
+			"ahmedkhalf/project.nvim",
+			config = function()
+				require("project_nvim").setup {
+					respect_buf_cwd = true,
+					update_cwd = true,
+					update_focused_file = {
+						enable = true,
+						update_cwd = true
+					},
+				}
+			end,
 		}
 		use {
 			'TC72/telescope-tele-tabby.nvim',
@@ -69,59 +75,107 @@ function M.setup()
 		use {
 			'nvim-lualine/lualine.nvim',
 			requires = { 'kyazdani42/nvim-web-devicons', opt = true },
-			config = function() require("config.lualine").setup() end,
+			config = function()
+				require("config.lualine").setup()
+			end,
 		} -- fancier statusline
 		use { 'sainnhe/gruvbox-material' } -- theme
 		use { "nathom/filetype.nvim" }
 		use {
 			'lewis6991/gitsigns.nvim',
 			requires = { 'nvim-lua/plenary.nvim' },
-			config = function() require("config.gitsigns").setup() end
+			config = function()
+				require("config.gitsigns").setup()
+			end,
 		} -- add git related info in the signs columns and popups}
 		use {
 			'nvim-treesitter/nvim-treesitter', -- highlight, edit, and navigate code using a fast incremental parsing library
 			run = ":TSUpdate",
-			config = function() require("config.treesitter").setup() end
+			config = function()
+				require("config.treesitter").setup()
+			end,
 		}
 		use 'nvim-treesitter/nvim-treesitter-textobjects' -- additional textobjects for treesitter
 		use {
 			"rcarriga/nvim-notify",
 			event = "VimEnter",
-			config = function() vim.notify = require("notify") end
-		} -- notifications
-		use "jose-elias-alvarez/null-ls.nvim"
+			config = function()
+				vim.notify = require("notify")
+			end,
+		} -- fancy notifications
+		use {
+			"VonHeikemen/fine-cmdline.nvim",
+			requires = {
+				{ 'MunifTanjim/nui.nvim' }
+			},
+			config = function()
+				require('fine-cmdline').setup({
+					cmdline = {
+						enable_keymaps = true,
+						smart_history = true,
+						prompt = ':'
+					},
+					popup = {
+						position = {
+							row = '10%',
+							col = '50%',
+						},
+						size = {
+							width = '60%',
+						},
+						border = {
+							style = 'double',
+						},
+						win_options = {
+							winhighlight = 'Normal:Normal,FloatBorder:Normal',
+						},
+					}
+				})
+			end,
+		} -- fancy comandline
+		use {
+			'VonHeikemen/searchbox.nvim',
+			requires = {
+				{ 'MunifTanjim/nui.nvim' }
+			}
+		} -- fancy searchbox
+		use {
+			"tiagovla/scope.nvim",
+			config = function()
+				require("scope").setup()
+			end,
+		} -- integrating vim tabs with bufferline
+		use "jose-elias-alvarez/null-ls.nvim" -- null language server
 		use {
 			"neovim/nvim-lspconfig",
 			opt = true,
 			event = "BufReadPre",
 			wants = {
-				"nvim-lsp-installer",
-				"lsp_signature.nvim",
-				"coq_nvim",
-				"lua-dev.nvim",
-				"vim-illuminate",
-				"null-ls.nvim",
-				"schemastore.nvim",
+				"nvim-lsp-installer", "lsp_signature.nvim", "coq_nvim",
+				"lua-dev.nvim", "vim-illuminate", "null-ls.nvim",
+				"schemastore.nvim"
 			},
-			config = function() require("config.lsp").setup() end,
+			config = function()
+				require("config.lsp").setup()
+			end,
 			requires = {
-				"williamboman/nvim-lsp-installer",
-				"ray-x/lsp_signature.nvim",
-				"folke/lua-dev.nvim",
-				"RRethy/vim-illuminate",
+				"williamboman/nvim-lsp-installer", "ray-x/lsp_signature.nvim",
+				"folke/lua-dev.nvim", "RRethy/vim-illuminate",
 				"jose-elias-alvarez/null-ls.nvim", {
 					"j-hui/fidget.nvim",
 					config = function()
-						require("fidget").setup {}
+						require("fidget").setup()
 					end,
-				},
-				"b0o/schemastore.nvim",
+				}, "b0o/schemastore.nvim"
 			}
 		} -- collection of configurations for built-in lsp client
+		use "b0o/schemastore.nvim"
 		use "folke/lua-dev.nvim"
 		use {
 			'j-hui/fidget.nvim',
-			config = function() require("fidget").setup() end
+			config = function()
+				require("fidget").setup()
+			end,
 		}
 		use {
 			"ms-jpq/coq_nvim",
@@ -135,8 +189,8 @@ function M.setup()
 			requires = {
 				{ "ms-jpq/coq.artifacts", branch = "artifacts" },
 				{ "ms-jpq/coq.thirdparty", branch = "3p", module = "coq_3p" },
-				{ "github/copilot.vim" },
-			},
+				{ "github/copilot.vim" }
+			}
 		} -- fast as fuck autocompletion plugin
 		use { 'ms-jpq/coq.artifacts', branch = 'artifacts' } -- 9000+ snippets
 		use 'p00f/nvim-ts-rainbow' -- rainbow brackets
@@ -144,7 +198,9 @@ function M.setup()
 		use {
 			"folke/trouble.nvim",
 			requires = "kyazdani42/nvim-web-devicons",
-			config = function() require("config.trouble").setup() end
+			config = function()
+				require("config.trouble").setup()
+			end,
 		}
 		use {
 			'ray-x/go.nvim', -- golang
@@ -155,14 +211,18 @@ function M.setup()
 				"nvim-telescope/telescope.nvim", "mfussenegger/nvim-dap",
 				"rcarriga/nvim-dap-ui"
 			},
-			config = function() require("config.go").setup() end
+			config = function()
+				require("config.go").setup()
+			end,
 		}
 		use 'unblevable/quick-scope' -- letters highlight for f f t t
 		use {
 			'kyazdani42/nvim-tree.lua',
 			module = "nvim-tree",
 			requires = 'kyazdani42/nvim-web-devicons',
-			config = function() require("config.nvim-tree").setup() end
+			config = function()
+				require("config.nvim-tree").setup()
+			end,
 		}
 		use { 'marklcrns/vim-smartq', branch = 'main' } -- smart buffer close on 'q'
 		use 'stsewd/gx-extended.vim' -- url opener
@@ -170,12 +230,16 @@ function M.setup()
 			'akinsho/bufferline.nvim',
 			requires = 'kyazdani42/nvim-web-devicons',
 			branch = 'main',
-			config = function() require("config.bufferline").setup() end
+			config = function()
+				require("config.bufferline").setup()
+			end,
 		}
 		use {
 			'akinsho/toggleterm.nvim',
 			branch = 'main',
-			config = function() require("config.toggleterm").setup() end
+			config = function()
+				require("config.toggleterm").setup()
+			end,
 		} -- persistent terminals
 		use 'gelguy/wilder.nvim'
 		use 'gennaro-tedesco/nvim-peekup' -- yank peeker
@@ -185,7 +249,9 @@ function M.setup()
 		use 'ray-x/lsp_signature.nvim' -- functions singature when typing
 		use {
 			'phaazon/hop.nvim', -- easy motion
-			config = function() require("hop").setup() end
+			config = function()
+				require("hop").setup()
+			end,
 		}
 		use {
 			"goolord/alpha-nvim",
@@ -200,16 +266,22 @@ function M.setup()
 		use 'rcarriga/nvim-dap-ui'
 		use {
 			'thehamsta/nvim-dap-virtual-text',
-			config = function() require("nvim-dap-virtual-text").setup() end,
+			config = function()
+				require("nvim-dap-virtual-text").setup()
+			end,
 		}
 		use {
 			'folke/which-key.nvim', -- hotkeys helper,
-			config = function() require("config.whichkey").setup() end,
+			config = function()
+				require("config.whichkey").setup()
+			end,
 		}
 		use { "SmiteshP/nvim-gps", requires = "nvim-treesitter/nvim-treesitter" }
 		use {
 			"karb94/neoscroll.nvim",
-			config = function() require("config.neoscroll").setup() end,
+			config = function()
+				require("config.neoscroll").setup()
+			end,
 		}
 
 		-- Bootstrap Neovim
