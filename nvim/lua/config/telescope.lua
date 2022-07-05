@@ -4,7 +4,7 @@ function M.setup()
 	local actions = require("telescope.actions")
 	local telescope = require("telescope")
 
-	telescope.setup {
+	telescope.setup({
 		defaults = {
 			mappings = {
 				i = {
@@ -23,8 +23,13 @@ function M.setup()
 			},
 			hidden_files = true, -- default: false
 			theme = "dropdown"
+		},
+		pickers = {
+			find_files = {
+				find_command = { "rg", "--ignore", "-L", "--hidden", "--files" },
+			},
 		}
-	}
+	})
 
 	telescope.load_extension "fzf"
 	telescope.load_extension "project" -- telescope-project.nvim

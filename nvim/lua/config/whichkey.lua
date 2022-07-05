@@ -64,8 +64,8 @@ local function normal_keymap()
 
 		b = {
 			name = "Buffer",
-			c = { "<Cmd>bd!<Cr>", "Close Buffer" },
-			D = { "<Cmd>%bd|e#|bd#<Cr>", "Delete All Buffers" }
+			c = { "<cmd>bd!<Cr>", "Close Buffer" },
+			D = { "<cmd>%bd|e#|bd#<Cr>", "Delete All Buffers" },
 		},
 
 		f = keymaps_f,
