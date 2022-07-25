@@ -1,17 +1,20 @@
 require("plugins").setup()
 
-vim.api.nvim_exec([[
+vim.api.nvim_exec(
+	[[
 	command -nargs=1 Browse silent exe '!open ' . "<args>"
-]], false)
+]],
+	false
+)
 
 -- Set colorscheme (order is important here)
 vim.opt.termguicolors = true
-vim.g.gruvbox_material_background = 'medium'
-vim.g.gruvbox_material_palette = 'mix'
-vim.g.gruvbox_material_diagnostic_virtual_text = 'colored'
-vim.g.gruvbox_material_diagnostic_text_highlight = '1'
-vim.g.gruvbox_material_diagnostic_line_highlight = '1'
-vim.cmd [[ colorscheme gruvbox-material  ]]
+vim.g.gruvbox_material_background = "medium"
+vim.g.gruvbox_material_palette = "mix"
+vim.g.gruvbox_material_diagnostic_virtual_text = "colored"
+vim.g.gruvbox_material_diagnostic_text_highlight = "1"
+vim.g.gruvbox_material_diagnostic_line_highlight = "1"
+vim.cmd([[ colorscheme gruvbox-material  ]])
 
 -- Disable some builtin vim plugins
 local disabled_built_ins = {

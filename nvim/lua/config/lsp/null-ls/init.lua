@@ -5,17 +5,17 @@ local nls_utils = require("null-ls.utils")
 local b = nls.builtins
 
 local with_diagnostics_code = function(builtin)
-	return builtin.with {
+	return builtin.with({
 		diagnostics_format = "#{m} [#{c}]",
-	}
+	})
 end
 
 local with_root_file = function(builtin, file)
-	return builtin.with {
+	return builtin.with({
 		condition = function(utils)
 			return utils.root_has_file(file)
 		end,
-	}
+	})
 end
 
 local sources = {
@@ -23,7 +23,7 @@ local sources = {
 	b.formatting.prettierd,
 	b.formatting.shfmt,
 	b.formatting.fixjson,
-	b.formatting.black.with { extra_args = { "--fast" } },
+	b.formatting.black.with({ extra_args = { "--fast" } }),
 	b.formatting.isort,
 	b.formatting.stylua,
 	b.formatting.gofmt,
@@ -52,7 +52,7 @@ local sources = {
 }
 
 function M.setup(opts)
-	nls.setup {
+	nls.setup({
 		debug = true,
 		debounce = 150,
 		save_after_format = false,
@@ -63,8 +63,8 @@ function M.setup(opts)
 			level = "warn",
 			use_console = "async",
 		},
-		root_dir = nls_utils.root_pattern ".git",
-	}
+		root_dir = nls_utils.root_pattern(".git"),
+	})
 end
 
 return M

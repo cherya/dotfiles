@@ -8,13 +8,11 @@ local M = {}
 
 function M.setup(servers, options)
 	for server_name, _ in pairs(servers) do
-		local server_available, server =
-		lsp_installer_servers.get_server(server_name)
+		local server_available, server = lsp_installer_servers.get_server(server_name)
 
 		if server_available then
 			server:on_ready(function()
-				local opts = vim.tbl_deep_extend("force", options,
-					servers[server.name] or {})
+				local opts = vim.tbl_deep_extend("force", options, servers[server.name] or {})
 				-- For coq.nvim
 				server:setup(coq.lsp_ensure_capabilities(opts))
 			end)
@@ -32,18 +30,22 @@ function M.setup(servers, options)
 	if not configs.golangcilsp then
 		configs.golangcilsp = {
 			default_config = {
-				cmd = { 'golangci-lint-langserver' },
-				root_dir = lspconfig.util.root_pattern('.git', 'go.mod'),
+				cmd = { "golangci-lint-langserver" },
+				root_dir = lspconfig.util.root_pattern(".git", "go.mod"),
 				init_options = {
 					command = {
-						"golangci-lint", "run", "--out-format", "json",
-						"--config=", ".golangci.yaml"
-					}
-				}
-			}
+						"golangci-lint",
+						"run",
+						"--out-format",
+						"json",
+						"--config=",
+						".golangci.yaml",
+					},
+				},
+			},
 		}
 	end
-	lspconfig.golangci_lint_ls.setup { filetypes = { 'go', 'gomod' } }
+	lspconfig.golangci_lint_ls.setup({ filetypes = { "go", "gomod" } })
 end
 
 return M

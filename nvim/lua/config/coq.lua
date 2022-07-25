@@ -8,14 +8,14 @@ function M.setup()
 		auto_start = true,
 		clients = {
 			tabnine = {
-				enabled = true
-			}
-		}
+				enabled = true,
+			},
+		},
 	}
 	coq.Now() -- Start coq
 
 	-- 3party sources
-	require("coq_3p") {
+	require("coq_3p")({
 		{ src = "nvimlua", short_name = "nLUA", conf_only = false }, -- Lua
 		{ src = "bc", short_name = "MATH", precision = 6 }, -- Calculator
 		{
@@ -26,8 +26,8 @@ function M.setup()
 			deadline = 500,
 			unsafe = { "rm", "poweroff", "mv" },
 		},
-		{ src = "copilot", short_name = "COP", accept_key = "<c-f>" }
-	}
+		{ src = "copilot", short_name = "COP", accept_key = "<c-f>" },
+	})
 end
 
 return M

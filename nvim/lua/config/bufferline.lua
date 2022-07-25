@@ -2,7 +2,7 @@
 local M = {}
 
 function M.setup()
-	require('bufferline').setup {
+	require("bufferline").setup({
 		options = {
 			mode = "buffers",
 			numbers = "ordinal",
@@ -11,8 +11,7 @@ function M.setup()
 			left_mouse_command = "buffer %d", -- can be a string | function, see "Mouse actions"
 			middle_mouse_command = nil, -- can be a string | function, see "Mouse actions"
 			diagnostics = "nvim_lsp",
-			diagnostics_indicator = function(count, level, diagnostics_dict, co,
-			                                 fa, truentext)
+			diagnostics_indicator = function(count, level, diagnostics_dict, co, fa, truentext)
 				return "(" .. count .. ")"
 			end,
 			offsets = { { filetype = "NvimTree", text = "File Explorer" } },
@@ -22,9 +21,9 @@ function M.setup()
 			show_tab_indicators = true,
 			persist_buffer_sort = true, -- whether or not custom sorted buffers should persist
 			separator_style = "thick",
-			sort_by = 'id'
-		}
-	}
+			sort_by = "id",
+		},
+	})
 end
 
 return M

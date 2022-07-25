@@ -3,6 +3,9 @@ NVIM_CONFIG_DIR = ${HOME}/.config/nvim
 TMUX_CONFIG_DIR = ${HOME}
 UNAME := $(shell uname)
 
+# apt get install this
+PACKAGES = "stow zsh"
+
 .PHONY: all
 all:
 	$(error nothing)

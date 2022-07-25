@@ -3,8 +3,8 @@ local whichkey = require("which-key")
 local conf = {
 	window = {
 		border = "single", -- none, single, double, shadow
-		position = "bottom" -- bottom, top
-	}
+		position = "bottom", -- bottom, top
+	},
 }
 
 whichkey.setup(conf)
@@ -21,32 +21,36 @@ local function normal_keymap()
 		h = { "<cmd>lua require('telescope.builtin').help_tags()<cr>", "Help" },
 		m = { "<cmd>lua require('telescope.builtin').marks()<cr>", "Marks" },
 		o = {
-			"<cmd>lua require('telescope.builtin').oldfiles()<cr>", "Old Files"
+			"<cmd>lua require('telescope.builtin').oldfiles()<cr>",
+			"Old Files",
 		},
 		g = {
-			"<cmd>lua require('telescope.builtin').live_grep()<cr>", "Live Grep"
+			"<cmd>lua require('telescope.builtin').live_grep()<cr>",
+			"Live Grep",
 		},
 		c = { "<cmd>lua require('telescope.builtin').commands()<cr>", "Commands" },
 		r = {
 			"<cmd>lua require'telescope'.extensions.file_browser.file_browser()<cr>",
-			"File Browser"
+			"File Browser",
 		},
 		w = {
 			"<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>",
-			"Current Buffer"
+			"Current Buffer",
 		},
-		e = { "<cmd>NvimTreeToggle<cr>", "Explorer" }
+		e = { "<cmd>NvimTreeToggle<cr>", "Explorer" },
 	}
 
 	keymaps_p = {
 		name = "Project",
 		p = {
 			"<cmd>lua require'telescope'.extensions.project.project{display_type = 'full'}<cr>",
-			"List"
+			"List",
 		},
-		s = { "<cmd>lua require'telescope'.extensions.repo.list{search_dirs = {'~/go/src/github.com', '~/Projects', '~/Prisma'}}<cr>",
-			"Search" },
-		P = { "<cmd>TermExec cmd='BROWSER=brave yarn dev'<cr>", "Slidev" }
+		s = {
+			"<cmd>lua require'telescope'.extensions.repo.list{search_dirs = {'~/go/src/github.com', '~/Projects', '~/Prisma'}}<cr>",
+			"Search",
+		},
+		P = { "<cmd>TermExec cmd='BROWSER=brave yarn dev'<cr>", "Slidev" },
 	}
 
 	local opts = {
@@ -55,7 +59,7 @@ local function normal_keymap()
 		buffer = nil, -- Global mappings. Specify a buffer number for buffer local mappings
 		silent = true, -- use `silent` when creating keymaps
 		noremap = true, -- use `noremap` when creating keymaps
-		nowait = false -- use `nowait` when creating keymaps
+		nowait = false, -- use `nowait` when creating keymaps
 	}
 
 	local mappings = {
@@ -97,7 +101,7 @@ local function normal_keymap()
 			name = "Git",
 			s = { "<cmd>Git status<CR>", "status" },
 			l = { "<cmd>lua require('config.toggleterm').LazygitToggle()<cr>", "Lazygit" },
-		}
+		},
 	}
 	whichkey.register(mappings, opts)
 
@@ -109,14 +113,11 @@ local function normal_keymap()
 		{ r = { "<cmd>SearchBoxReplace<CR>", "Replace" } },
 		{ mode = "n", silent = true, noremap = true, prefix = "<leader>" }
 	)
-	whichkey.register(
-		{ [":"] = { "<cmd>FineCmdline<CR>", "Command Line" } },
-		{ mode = "n", noremap = true }
-	)
+	whichkey.register({ [":"] = { "<cmd>FineCmdline<CR>", "Command Line" } }, { mode = "n", noremap = true })
 end
 
 local function code_keymap()
-	vim.cmd "autocmd FileType * lua CodeRunner()"
+	vim.cmd("autocmd FileType * lua CodeRunner()")
 
 	function CodeRunner()
 		local bufnr = vim.api.nvim_get_current_buf()

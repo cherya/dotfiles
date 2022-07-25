@@ -3,6 +3,13 @@ local servers = {
 	gopls = {},
 	html = {},
 	sqlls = {},
+	yamlls = {
+		settings = {
+			yaml = {
+				schemas = require("schemastore").json.schemas(),
+			},
+		},
+	},
 	jsonls = {
 		settings = {
 			json = {
@@ -19,24 +26,24 @@ local servers = {
 					-- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
 					version = "LuaJIT",
 					-- Setup your lua path
-					path = vim.split(package.path, ";")
+					path = vim.split(package.path, ";"),
 				},
 				diagnostics = {
 					-- Get the language server to recognize the `vim` global
-					globals = { "vim" }
+					globals = { "vim" },
 				},
 				workspace = {
 					-- Make the server aware of Neovim runtime files
 					library = {
-						[vim.fn.expand "$VIMRUNTIME/lua"] = true,
-						[vim.fn.expand "$VIMRUNTIME/lua/vim/lsp"] = true
-					}
-				}
-			}
-		}
+						[vim.fn.expand("$VIMRUNTIME/lua")] = true,
+						[vim.fn.expand("$VIMRUNTIME/lua/vim/lsp")] = true,
+					},
+				},
+			},
+		},
 	},
 	tsserver = {},
-	vimls = {}
+	vimls = {},
 }
 
 local function on_attach(client, bufnr)
@@ -55,7 +62,7 @@ local function on_attach(client, bufnr)
 	require("illuminate").on_attach(client)
 	require("lsp_signature").on_attach({
 		bind = true,
-		handler_opts = { border = "rounded" }
+		handler_opts = { border = "rounded" },
 	})
 
 	require("config.lsp.null-ls.formatters").setup(client, bufnr)
@@ -64,35 +71,35 @@ local function on_attach(client, bufnr)
 	local capabilities = vim.lsp.protocol.make_client_capabilities()
 	coq.lsp_ensure_capabilities({
 		on_attach = on_attach,
-		capabilities = capabilities
+		capabilities = capabilities,
 	})
 
 	vim.lsp.protocol.CompletionItemKind = {
-		'', -- Text
-		'', -- Method
-		'', -- Function
-		'', -- Constructor
-		'', -- Field
-		'', -- Variable
-		'', -- Class
-		'ﰮ', -- Interface
-		'', -- Module
-		'', -- Property
-		'', -- Unit
-		'', -- Value
-		'', -- Enum
-		'', -- Keyword
-		'﬌', -- Snippet
-		'', -- Color
-		'', -- File
-		'', -- Reference
-		'', -- Folder
-		'', -- EnumMember
-		'', -- Constant
-		'', -- Struct
-		'', -- Event
-		'ﬦ', -- Operator
-		'' -- TypeParameter
+		"", -- Text
+		"", -- Method
+		"", -- Function
+		"", -- Constructor
+		"", -- Field
+		"", -- Variable
+		"", -- Class
+		"ﰮ", -- Interface
+		"", -- Module
+		"", -- Property
+		"", -- Unit
+		"", -- Value
+		"", -- Enum
+		"", -- Keyword
+		"﬌", -- Snippet
+		"", -- Color
+		"", -- File
+		"", -- Reference
+		"", -- Folder
+		"", -- EnumMember
+		"", -- Constant
+		"", -- Struct
+		"", -- Event
+		"ﬦ", -- Operator
+		"", -- TypeParameter
 	}
 end
 

@@ -32,10 +32,10 @@ end
 
 -- Find dotfiles
 function M.find_dotfiles()
-	require("telescope.builtin").find_files {
+	require("telescope.builtin").find_files({
 		prompt_title = "<Dotfiles>",
 		cwd = "$HOME/.config/nvim/",
-	}
+	})
 end
 
 return M

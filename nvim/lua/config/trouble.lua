@@ -1,7 +1,7 @@
 local M = {}
 
 function M.setup()
-	require("trouble").setup {
+	require("trouble").setup({
 		auto_open = true,
 		auto_close = false,
 		auto_preview = true,
@@ -12,9 +12,9 @@ function M.setup()
 			warning = "",
 			hint = "",
 			information = "",
-			other = "﫠"
-		}
-	}
+			other = "﫠",
+		},
+	})
 end
 
 return M
